@@ -257,7 +257,7 @@ function Hero() {
 const TIMELINE = [
   { y: "2020", t: "10th Grade", d: "Prerana English Medium High School — 75%" },
   { y: "2022", t: "Pre-University", d: "Elite Pre-University College — 70%" },
-  { y: "2024", t: "SDET Trainee", d: "QSpiders, Rajajinagar — Selenium, TestNG, POM" },
+  { y: "2026", t: "SDET Trainee", d: "QSpiders, Rajajinagar — Selenium, TestNG, POM" },
   { y: "2026", t: "B.E Computer Science", d: "R.L. Jalappa Institute of Technology (VTU) — 82%" },
 ];
 
