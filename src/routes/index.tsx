@@ -307,8 +307,8 @@ function About() {
                   <span className="absolute left-0 top-2 h-3 w-3 rounded-full bg-gradient-to-br from-[oklch(0.7_0.2_265)] to-[oklch(0.7_0.22_310)] shadow-[0_0_12px_oklch(0.7_0.22_310/0.8)]" />
                   {idx < TIMELINE.length - 1 && <span className="absolute left-[5px] top-5 h-full w-px bg-gradient-to-b from-white/20 to-transparent" />}
                   <div className="flex-1">
-                    <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-xs text-[oklch(0.85_0.16_210)]">{item.y}</span>
+                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                      <span className="font-mono text-xs text-[oklch(0.85_0.16_210)] shrink-0">{item.y}</span>
                       <h4 className="font-medium">{item.t}</h4>
                     </div>
                     <p className="mt-1 text-sm text-muted-foreground">{item.d}</p>
