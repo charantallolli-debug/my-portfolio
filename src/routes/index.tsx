@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Suspense } from "react";
+import resumeAsset from "@/assets/resume.docx.asset.json";
+
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stars, Float, MeshDistortMaterial, Sphere } from "@react-three/drei";
@@ -212,7 +214,7 @@ function Hero() {
             transition={{ delay: 0.55, duration: 0.6 }}
             className="mt-8 flex flex-wrap gap-3"
           >
-            <a href="/Charan_Tallolli_Resume.docx" download className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[oklch(0.7_0.2_265)] via-[oklch(0.7_0.22_310)] to-[oklch(0.85_0.16_210)] px-5 py-3 text-sm font-medium text-primary-foreground shadow-[0_10px_40px_-10px_oklch(0.7_0.22_310/0.8)] transition hover:scale-[1.03]">
+            <a href={resumeAsset.url} download="Charan_Tallolli_Resume.docx" target="_blank" rel="noopener" className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[oklch(0.7_0.2_265)] via-[oklch(0.7_0.22_310)] to-[oklch(0.85_0.16_210)] px-5 py-3 text-sm font-medium text-primary-foreground shadow-[0_10px_40px_-10px_oklch(0.7_0.22_310/0.8)] transition hover:scale-[1.03]">
               <Download className="h-4 w-4" /> Download Resume
             </a>
             <a href="#projects" className="group inline-flex items-center gap-2 rounded-full glass px-5 py-3 text-sm font-medium transition hover:bg-white/10">
