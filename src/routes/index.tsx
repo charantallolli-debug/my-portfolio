@@ -135,13 +135,6 @@ function Nav() {
           </a>
         ))}
       </nav>
-      <a
-        href="/Charan_Tallolli_Resume.docx"
-        download
-        className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[oklch(0.7_0.2_265)] to-[oklch(0.7_0.22_310)] px-4 py-1.5 text-sm font-medium text-primary-foreground shadow-[0_0_20px_-4px_oklch(0.7_0.22_310/0.7)] transition hover:opacity-90"
-      >
-        <Download className="h-3.5 w-3.5" /> Resume
-      </a>
     </motion.header>
   );
 }
