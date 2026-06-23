@@ -100,7 +100,6 @@ function SectionTitle({ kicker, title, subtitle }: { kicker: string; title: stri
 /* ---------------- Nav ---------------- */
 const NAV = [
   { id: "about", label: "About" },
-  { id: "skills", label: "Skills" },
   { id: "projects", label: "Projects" },
   { id: "experience", label: "Experience" },
   { id: "achievements", label: "Achievements" },
@@ -318,53 +317,6 @@ function About() {
   );
 }
 
-/* ---------------- Skills ---------------- */
-const SKILLS = [
-  { n: "Python", c: "from-blue-400 to-cyan-400" },
-  { n: "Java", c: "from-orange-400 to-red-400" },
-  { n: "SQL", c: "from-sky-400 to-indigo-400" },
-  { n: "Selenium", c: "from-emerald-400 to-teal-400" },
-  { n: "TestNG", c: "from-red-400 to-pink-400" },
-  { n: "TensorFlow", c: "from-amber-400 to-orange-500" },
-  { n: "Keras", c: "from-rose-400 to-pink-500" },
-  { n: "OpenCV", c: "from-lime-400 to-emerald-500" },
-  { n: "MediaPipe", c: "from-violet-400 to-purple-500" },
-  { n: "Flask", c: "from-zinc-300 to-zinc-500" },
-  { n: "React", c: "from-cyan-400 to-blue-500" },
-  { n: "JavaScript", c: "from-yellow-300 to-amber-500" },
-  { n: "HTML & CSS", c: "from-orange-400 to-pink-400" },
-  { n: "Git & GitHub", c: "from-fuchsia-400 to-purple-500" },
-  { n: "JIRA", c: "from-blue-500 to-indigo-500" },
-  { n: "Prompt Engineering", c: "from-purple-400 to-fuchsia-500" },
-];
-
-function Skills() {
-  return (
-    <section id="skills" className="relative py-28">
-      <div className="container mx-auto max-w-6xl px-6">
-        <SectionTitle kicker="Stack" title="Skills & tools" subtitle="A toolkit spanning AI, automation testing, and full-stack delivery." />
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-          {SKILLS.map((s, i) => (
-            <motion.div
-              key={s.n}
-              initial={{ opacity: 0, y: 20, rotateX: -20 }}
-              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: i * 0.04, duration: 0.5 }}
-              whileHover={{ y: -6, rotateX: 8, rotateY: 8 }}
-              style={{ transformStyle: "preserve-3d", perspective: 800 }}
-              className="group relative overflow-hidden rounded-2xl glass p-5 text-center"
-            >
-              <div className={`absolute inset-0 -z-10 bg-gradient-to-br ${s.c} opacity-0 blur-2xl transition group-hover:opacity-30`} />
-              <div className={`mx-auto mb-3 h-10 w-10 rounded-xl bg-gradient-to-br ${s.c} opacity-90 shadow-lg`} />
-              <div className="font-medium">{s.n}</div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ---------------- Projects ---------------- */
 const PROJECTS = [
@@ -639,7 +591,6 @@ function Portfolio() {
       <main>
         <Hero />
         <About />
-        <Skills />
         <Projects />
         <Experience />
         <Achievements />
