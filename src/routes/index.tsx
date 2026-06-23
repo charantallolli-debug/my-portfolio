@@ -141,7 +141,7 @@ function Nav() {
 }
 
 /* ---------------- Hero ---------------- */
-const ROLES = ["AI Developer", "Machine Learning Engineer", "Automation Test Engineer", "Full-Stack Developer"];
+const ROLES = ["AI Developer", "Automation Test Engineer", "Full-Stack Developer"];
 
 function Hero() {
   const [i, setI] = useState(0);
