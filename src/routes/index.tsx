@@ -1,16 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import resumeAsset from "@/assets/resume.docx.asset.json";
 
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Stars, Float, MeshDistortMaterial, Sphere } from "@react-three/drei";
 import {
   Download, Mail, Github, Linkedin, Phone, MapPin, ExternalLink,
   Code2, Brain, TestTube2, Layers, Sparkles, ArrowRight, Calendar,
   Award, Trophy, GraduationCap, Briefcase, ChevronRight,
 } from "lucide-react";
-import * as THREE from "three";
 
 export const Route = createFileRoute("/")({
   head: () => ({
