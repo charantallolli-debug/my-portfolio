@@ -26,47 +26,140 @@ export const Route = createFileRoute("/")({
   component: Portfolio,
 });
 
-/* ---------------- 3D scene ---------------- */
-function HeroOrb() {
-  const mesh = useRef<THREE.Mesh>(null);
-  useFrame((state) => {
-    if (mesh.current) {
-      mesh.current.rotation.y = state.clock.elapsedTime * 0.2;
-      mesh.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
-    }
-  });
+/* ---------------- Hero Visual ---------------- */
+function HeroVisual() {
   return (
-    <Float speed={1.4} rotationIntensity={0.6} floatIntensity={1.2}>
-      <Sphere ref={mesh} args={[1.4, 96, 96]}>
-        <MeshDistortMaterial
-          color="#8b5cf6"
-          attach="material"
-          distort={0.45}
-          speed={2}
-          roughness={0.1}
-          metalness={0.8}
-          emissive="#4f46e5"
-          emissiveIntensity={0.4}
+    <div className="relative h-[420px] md:h-[560px]">
+      <div className="absolute inset-0 rounded-3xl glass-strong overflow-hidden animate-pulse-glow">
+        {/* animated gradient mesh */}
+        <motion.div
+          aria-hidden
+          className="absolute -inset-20 opacity-70"
+          style={{
+            background:
+              "radial-gradient(40% 40% at 30% 30%, oklch(0.7 0.22 310 / 0.55), transparent 60%), radial-gradient(35% 35% at 70% 60%, oklch(0.75 0.2 210 / 0.5), transparent 60%), radial-gradient(30% 30% at 50% 80%, oklch(0.7 0.2 265 / 0.5), transparent 60%)",
+            filter: "blur(20px)",
+          }}
+          animate={{ rotate: [0, 360] }}
+          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
         />
-      </Sphere>
-      <Sphere args={[1.85, 64, 64]}>
-        <meshBasicMaterial color="#22d3ee" wireframe transparent opacity={0.15} />
-      </Sphere>
-    </Float>
-  );
-}
 
-function HeroScene() {
-  return (
-    <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 5], fov: 45 }}>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[10, 10, 10]} intensity={1.2} color="#a78bfa" />
-      <pointLight position={[-10, -5, -10]} intensity={0.8} color="#22d3ee" />
-      <Suspense fallback={null}>
-        <HeroOrb />
-        <Stars radius={50} depth={50} count={2500} factor={3} fade speed={1} />
-      </Suspense>
-    </Canvas>
+        {/* grid */}
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-[0.12]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+            backgroundSize: "44px 44px",
+            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 75%)",
+          }}
+        />
+
+        {/* concentric rotating rings */}
+        <div className="absolute inset-0 grid place-items-center">
+          {[0, 1, 2, 3].map((i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full border border-white/15"
+              style={{
+                width: 140 + i * 70,
+                height: 140 + i * 70,
+                borderStyle: i % 2 ? "dashed" : "solid",
+                boxShadow: "0 0 40px oklch(0.7 0.22 310 / 0.15) inset",
+              }}
+              animate={{ rotate: i % 2 ? -360 : 360 }}
+              transition={{ duration: 18 + i * 6, repeat: Infinity, ease: "linear" }}
+            />
+          ))}
+
+          {/* core orb */}
+          <motion.div
+            className="relative h-40 w-40 rounded-full"
+            style={{
+              background:
+                "radial-gradient(circle at 30% 30%, oklch(0.95 0.1 310), oklch(0.55 0.25 290) 45%, oklch(0.25 0.15 280) 80%)",
+              boxShadow:
+                "0 0 80px oklch(0.7 0.22 310 / 0.7), 0 0 160px oklch(0.7 0.2 265 / 0.4), inset 0 0 40px oklch(0.95 0.1 310 / 0.3)",
+            }}
+            animate={{ scale: [1, 1.06, 1] }}
+            transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/30 to-transparent mix-blend-overlay" />
+          </motion.div>
+
+          {/* orbiting dots */}
+          {[0, 1, 2, 3, 4].map((i) => {
+            const radius = 110 + (i % 3) * 55;
+            const dur = 8 + i * 2;
+            return (
+              <motion.div
+                key={`orb-${i}`}
+                className="absolute"
+                style={{ width: radius * 2, height: radius * 2 }}
+                animate={{ rotate: i % 2 ? -360 : 360 }}
+                transition={{ duration: dur, repeat: Infinity, ease: "linear" }}
+              >
+                <div
+                  className="absolute left-1/2 top-0 h-2.5 w-2.5 -translate-x-1/2 rounded-full"
+                  style={{
+                    background: i % 2 ? "oklch(0.85 0.16 210)" : "oklch(0.8 0.2 310)",
+                    boxShadow: "0 0 14px currentColor",
+                    color: i % 2 ? "oklch(0.85 0.16 210)" : "oklch(0.8 0.2 310)",
+                  }}
+                />
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* floating sparkles */}
+        {Array.from({ length: 18 }).map((_, i) => (
+          <motion.span
+            key={`s-${i}`}
+            className="absolute h-1 w-1 rounded-full bg-white/80"
+            style={{
+              left: `${(i * 53) % 100}%`,
+              top: `${(i * 37) % 100}%`,
+              boxShadow: "0 0 8px white",
+            }}
+            animate={{ opacity: [0.1, 1, 0.1], scale: [0.6, 1.4, 0.6] }}
+            transition={{
+              duration: 2 + (i % 5) * 0.6,
+              repeat: Infinity,
+              delay: (i % 7) * 0.3,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+
+        {/* scanning line */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.85_0.16_210)] to-transparent"
+          animate={{ top: ["0%", "100%", "0%"] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="absolute left-4 top-4 rounded-full glass px-3 py-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground"
+        >
+          ai.core // online
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="absolute right-4 bottom-4 rounded-full glass px-3 py-1 text-[10px] font-mono text-muted-foreground"
+        >
+          v2026.0
+        </motion.div>
+      </div>
+    </div>
   );
 }
 
