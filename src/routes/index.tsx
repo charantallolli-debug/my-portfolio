@@ -1,21 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import resumeAsset from "@/assets/resume.docx.asset.json";
-
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import {
-  Download, Mail, Github, Linkedin, Phone, MapPin, ExternalLink,
-  Code2, Brain, TestTube2, Layers, Sparkles, ArrowRight, Calendar,
-  Award, Trophy, GraduationCap, Briefcase, ChevronRight,
+  Download, Mail, Github, Linkedin, MapPin, ExternalLink, ArrowRight,
 } from "lucide-react";
+import resumeAsset from "@/assets/resume.docx.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Charan Tallolli — AI Developer, SDET & Full-Stack" },
-      { name: "description", content: "Premium portfolio of Charan Tallolli: AI/ML developer, automation test engineer (Selenium, TestNG) and full-stack engineer." },
-      { property: "og:title", content: "Charan Tallolli — AI Developer & SDET" },
-      { property: "og:description", content: "AI, ML, Software Testing & Full-Stack portfolio." },
+      { title: "Charan Tallolli — AI Developer & SDET Engineer" },
+      { name: "description", content: "AI developer and SDET building intelligent systems and rigorously testing them — CNN pipelines, Selenium automation, full-stack delivery." },
+      { property: "og:title", content: "Charan Tallolli — AI Developer & SDET Engineer" },
+      { property: "og:description", content: "AI developer and SDET building intelligent systems and rigorously testing them." },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],
@@ -23,444 +20,463 @@ export const Route = createFileRoute("/")({
   component: Portfolio,
 });
 
-/* ---------------- Hero Visual ---------------- */
-function HeroVisual() {
+/* ---------------- Data ---------------- */
+
+const NAV = [
+  { id: "profile", label: "Profile" },
+  { id: "philosophy", label: "Philosophy" },
+  { id: "projects", label: "Projects" },
+  { id: "experience", label: "Experience" },
+  { id: "stack", label: "Tech Stack" },
+];
+
+const METRICS = [
+  {
+    k: "94%",
+    label: "CNN Model Accuracy",
+    desc: "Achieved on a 5-crop disease classification pipeline trained with TensorFlow / Keras on augmented field imagery.",
+    accent: "blue" as const,
+  },
+  {
+    k: "60%",
+    label: "Regression Time Saved",
+    desc: "By replacing manual regression with a Selenium + TestNG Page Object Model framework backed by data-driven suites.",
+    accent: "green" as const,
+  },
+  {
+    k: "ACTIVE",
+    label: "QA Engineering Status",
+    desc: "Currently shipping STLC artifacts, automation, and SQL data validation as an SDET trainee in Bangalore.",
+    accent: "blue" as const,
+  },
+];
+
+const PRINCIPLES = [
+  {
+    n: "01",
+    kicker: "RELIABILITY",
+    title: "Tests Are Not Optional",
+    body: "Every shipped feature ships with its proof. Smoke, regression, SIT, and UAT are baked into the delivery loop — not bolted on the week before release.",
+  },
+  {
+    n: "02",
+    kicker: "OBSERVABILITY",
+    title: "Validate The Data, Not Just The UI",
+    body: "If you cannot SQL-verify the row that the screen claims to show, the system is unverified. Backend assertions and CRUD validation matter as much as click paths.",
+  },
+  {
+    n: "03",
+    kicker: "AUTOMATION",
+    title: "Frameworks Over One-Off Scripts",
+    body: "Page Object Models, reusable test data, and TestNG suites compound. Disposable scripts decay. Invest in structure that survives the next sprint.",
+  },
+  {
+    n: "04",
+    kicker: "EXPERIMENTATION",
+    title: "AI Is An Engineering Discipline",
+    body: "CNNs, MediaPipe pipelines, and prompt-engineered helpers only matter when they cross the line from notebook to a Flask endpoint someone can call.",
+  },
+  {
+    n: "05",
+    kicker: "CRITICALITY",
+    title: "Defects Have A Life Cycle",
+    body: "Logged, triaged, fixed, retested, closed — with traceability. A defect without an owner and a status is a leak waiting to happen in production.",
+  },
+  {
+    n: "06",
+    kicker: "OWNERSHIP",
+    title: "End To End, Not Hand Offs",
+    body: "From requirement reading and test planning to model training, API wiring, and cross-browser validation — I take the artifact across the whole arc.",
+  },
+];
+
+const PROJECTS = [
+  {
+    icon: "🌾",
+    title: "AgriSense — AI Crop Disease Detection",
+    status: "Final-Year Project",
+    statusHref: null as string | null,
+    statusCta: null as string | null,
+    blurb:
+      "CNN-powered multi-crop disease classifier with OpenCV preprocessing, served through a Flask REST API for field-side diagnosis.",
+    bullets: [
+      ["Multi-Crop CNN Classifier:", "Trained a TensorFlow / Keras model across 5 crop types reaching 94% validation accuracy with zero false-negatives on critical disease classes."],
+      ["OpenCV Preprocessing:", "Built a deterministic image normalization pipeline (resize, denoise, channel correction) so field photos match training distribution."],
+      ["Flask REST Inference API:", "Wrapped the model in a versioned Flask endpoint with structured JSON responses, ready for mobile and dashboard consumers."],
+      ["Hardened with QA:", "Validated end-to-end against 30+ UAT criteria with zero P1 defects at v1.0 release."],
+    ],
+    stack: ["Python", "TensorFlow", "Keras", "OpenCV", "Flask", "REST"],
+  },
+  {
+    icon: "🤟",
+    title: "Real-Time Sign Language Interpreter",
+    status: "Computer Vision",
+    statusHref: null,
+    statusCta: null,
+    blurb:
+      "Real-time hand-tracking and gesture classifier translating 26 sign classes into text and synthesized speech on a live webcam stream.",
+    bullets: [
+      ["MediaPipe Hand Tracking:", "Sub-frame hand landmark extraction used as deterministic features for the downstream classifier."],
+      ["CNN Gesture Classifier:", "Trained on a 26-class dataset with 96% reliability across a 200-sample sanity suite."],
+      ["Text + Speech Output:", "Recognized signs are surfaced both as live captions and TTS audio for accessibility scenarios."],
+      ["Live Webcam Pipeline:", "Frame capture, inference, and rendering tuned to run on commodity laptops without GPU acceleration."],
+    ],
+    stack: ["Python", "MediaPipe", "CNN", "OpenCV", "pyttsx3"],
+  },
+  {
+    icon: "🛣️",
+    title: "Safe Commute Planner",
+    status: "Full-Stack Delivery",
+    statusHref: null,
+    statusCta: null,
+    blurb:
+      "Cross-browser web app for safer route planning, shipped defect-free across 4 browsers with Selenium-driven regression and SIT cycles.",
+    bullets: [
+      ["React + Python Backend:", "React UI talking to a Python REST backend with structured route, hazard, and user endpoints."],
+      ["Selenium Cross-Browser:", "Regression suite covers Chrome, Firefox, Edge, and Brave with parallel TestNG execution."],
+      ["SQL Data Validation:", "Backend assertions check that planned routes, hazards, and user state match the database 1:1."],
+      ["SIT & Regression Cycles:", "Released v1.0 with zero P1 defects after 3 SIT rounds and a full regression pass."],
+    ],
+    stack: ["React", "Python", "Selenium", "TestNG", "SQL"],
+  },
+];
+
+const EXPERIENCE = [
+  {
+    role: "SDET Trainee — Software Testing Automation with AI",
+    org: "QSpiders, Rajajinagar",
+    period: "2024 – 2025 · Bangalore, IN",
+    points: [
+      ["Full STLC Ownership:", "Designed and executed 50+ manual test cases across Smoke, Sanity, Regression, SIT, and UAT with full requirements traceability."],
+      ["Selenium + TestNG Framework:", "Built an end-to-end Selenium + TestNG + Page Object Model automation suite that cut regression execution time by ~60%."],
+      ["Defect Life Cycle Discipline:", "Maintained zero missed closures via JIRA-style workflows and structured Excel defect trackers."],
+      ["Backend Data Validation:", "Validated 3 modules end-to-end with 100% accuracy using SQL joins and CRUD verification queries."],
+    ],
+  },
+  {
+    role: "B.E in Computer Science Engineering",
+    org: "R.L. Jalappa Institute of Technology — VTU",
+    period: "2022 – 2026 · 82% aggregate",
+    points: [
+      ["AI & Systems Focus:", "Concentration on machine learning, computer vision, and software engineering coursework alongside hands-on capstone work."],
+      ["Capstone Delivery:", "Led AgriSense from dataset curation through model training, Flask API deployment, and UAT sign-off."],
+      ["Cross-Discipline Projects:", "Shipped Sign Language Interpreter and Safe Commute Planner as multi-semester collaborative builds."],
+    ],
+  },
+  {
+    role: "Pre-University & 10th Grade",
+    org: "Elite PU College · Prerana English Medium HS",
+    period: "2018 – 2022",
+    points: [
+      ["Pre-University:", "Elite Pre-University College — 70%."],
+      ["10th Grade:", "Prerana English Medium High School — 75%."],
+    ],
+  },
+];
+
+const STACK = [
+  {
+    group: "AI & Machine Learning",
+    items: [
+      ["TensorFlow", "CNN Pipelines"],
+      ["Keras", "Model Training"],
+      ["OpenCV", "Vision Preprocessing"],
+      ["MediaPipe", "Hand Tracking"],
+      ["Prompt Engineering", "LLM Workflows"],
+    ],
+  },
+  {
+    group: "Testing & QA",
+    items: [
+      ["Selenium WebDriver", "Automation Core"],
+      ["TestNG", "Suite Orchestration"],
+      ["Page Object Model", "Framework Design"],
+      ["JIRA", "Defect Lifecycle"],
+      ["SQL", "Data Validation"],
+    ],
+  },
+  {
+    group: "Full-Stack Delivery",
+    items: [
+      ["React", "Dashboards"],
+      ["Flask", "REST APIs"],
+      ["Python", "Backend & ML"],
+      ["Java", "Core / Automation"],
+      ["JavaScript", "Web Clients"],
+    ],
+  },
+  {
+    group: "Tools & Infrastructure",
+    items: [
+      ["Git & GitHub", "Version Control"],
+      ["VS Code", "Primary IDE"],
+      ["IntelliJ IDEA", "Java / TestNG"],
+      ["Postman", "API Verification"],
+      ["Excel Trackers", "Defect Reporting"],
+    ],
+  },
+];
+
+/* ---------------- Primitives ---------------- */
+
+function MetaStrip() {
   return (
-    <div className="relative h-[420px] md:h-[560px]">
-      <div className="absolute inset-0 rounded-3xl glass-strong overflow-hidden animate-pulse-glow">
-        {/* animated gradient mesh */}
-        <motion.div
-          aria-hidden
-          className="absolute -inset-20 opacity-70"
-          style={{
-            background:
-              "radial-gradient(40% 40% at 30% 30%, oklch(0.7 0.22 310 / 0.55), transparent 60%), radial-gradient(35% 35% at 70% 60%, oklch(0.75 0.2 210 / 0.5), transparent 60%), radial-gradient(30% 30% at 50% 80%, oklch(0.7 0.2 265 / 0.5), transparent 60%)",
-            filter: "blur(20px)",
-          }}
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-        />
-
-        {/* grid */}
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-[0.12]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-            backgroundSize: "44px 44px",
-            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 75%)",
-          }}
-        />
-
-        {/* concentric rotating rings */}
-        <div className="absolute inset-0 grid place-items-center">
-          {[0, 1, 2, 3].map((i) => (
-            <motion.div
-              key={i}
-              className="absolute rounded-full border border-white/15"
-              style={{
-                width: 140 + i * 70,
-                height: 140 + i * 70,
-                borderStyle: i % 2 ? "dashed" : "solid",
-                boxShadow: "0 0 40px oklch(0.7 0.22 310 / 0.15) inset",
-              }}
-              animate={{ rotate: i % 2 ? -360 : 360 }}
-              transition={{ duration: 18 + i * 6, repeat: Infinity, ease: "linear" }}
-            />
-          ))}
-
-          {/* core orb */}
-          <motion.div
-            className="relative h-40 w-40 rounded-full"
-            style={{
-              background:
-                "radial-gradient(circle at 30% 30%, oklch(0.95 0.1 310), oklch(0.55 0.25 290) 45%, oklch(0.25 0.15 280) 80%)",
-              boxShadow:
-                "0 0 80px oklch(0.7 0.22 310 / 0.7), 0 0 160px oklch(0.7 0.2 265 / 0.4), inset 0 0 40px oklch(0.95 0.1 310 / 0.3)",
-            }}
-            animate={{ scale: [1, 1.06, 1] }}
-            transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/30 to-transparent mix-blend-overlay" />
-          </motion.div>
-
-          {/* orbiting dots */}
-          {[0, 1, 2, 3, 4].map((i) => {
-            const radius = 110 + (i % 3) * 55;
-            const dur = 8 + i * 2;
-            return (
-              <motion.div
-                key={`orb-${i}`}
-                className="absolute"
-                style={{ width: radius * 2, height: radius * 2 }}
-                animate={{ rotate: i % 2 ? -360 : 360 }}
-                transition={{ duration: dur, repeat: Infinity, ease: "linear" }}
-              >
-                <div
-                  className="absolute left-1/2 top-0 h-2.5 w-2.5 -translate-x-1/2 rounded-full"
-                  style={{
-                    background: i % 2 ? "oklch(0.85 0.16 210)" : "oklch(0.8 0.2 310)",
-                    boxShadow: "0 0 14px currentColor",
-                    color: i % 2 ? "oklch(0.85 0.16 210)" : "oklch(0.8 0.2 310)",
-                  }}
-                />
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* floating sparkles */}
-        {Array.from({ length: 18 }).map((_, i) => (
-          <motion.span
-            key={`s-${i}`}
-            className="absolute h-1 w-1 rounded-full bg-white/80"
-            style={{
-              left: `${(i * 53) % 100}%`,
-              top: `${(i * 37) % 100}%`,
-              boxShadow: "0 0 8px white",
-            }}
-            animate={{ opacity: [0.1, 1, 0.1], scale: [0.6, 1.4, 0.6] }}
-            transition={{
-              duration: 2 + (i % 5) * 0.6,
-              repeat: Infinity,
-              delay: (i % 7) * 0.3,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-
-        {/* scanning line */}
-        <motion.div
-          aria-hidden
-          className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.85_0.16_210)] to-transparent"
-          animate={{ top: ["0%", "100%", "0%"] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="absolute left-4 top-4 rounded-full glass px-3 py-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground"
-        >
-          ai.core // online
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="absolute right-4 bottom-4 rounded-full glass px-3 py-1 text-[10px] font-mono text-muted-foreground"
-        >
-          v2026.0
-        </motion.div>
+    <div className="grid grid-cols-1 gap-2 border-b border-border pb-4 text-xs md:grid-cols-3">
+      <div className="mono-label">
+        <span className="text-foreground/40">URL:</span>{" "}
+        <span className="text-foreground">charantallolli.dev</span>
+      </div>
+      <div className="mono-label md:text-center">
+        <span className="text-foreground/40">Location:</span>{" "}
+        <span className="text-foreground">Bangalore, IN</span>
+      </div>
+      <div className="mono-label md:text-right">
+        <span className="text-foreground/40">Specialty:</span>{" "}
+        <span className="text-foreground">AI &amp; QA Engineering</span>
       </div>
     </div>
   );
 }
 
-/* ---------------- helpers ---------------- */
-function useMounted() {
-  const [m, setM] = useState(false);
-  useEffect(() => setM(true), []);
-  return m;
+function MetricCard({ k, label, desc, accent }: { k: string; label: string; desc: string; accent: "blue" | "green" }) {
+  const bar = accent === "green" ? "bg-[var(--accent-green)]" : "bg-[var(--accent-blue)]";
+  return (
+    <div className="relative card-surface p-5">
+      <div className={`absolute inset-y-3 left-0 w-[3px] rounded-r ${bar}`} />
+      <div className="pl-3">
+        <div className="font-display text-3xl font-bold text-[var(--ink)]">{k}</div>
+        <div className="mono-label mt-1">{label}</div>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+      </div>
+    </div>
+  );
 }
 
-function SectionTitle({ kicker, title, subtitle }: { kicker: string; title: string; subtitle?: string }) {
+function SectionKicker({ kicker, title }: { kicker: string; title: string }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6 }}
-      className="mb-14 text-center"
-    >
-      <div className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-        <Sparkles className="h-3 w-3" /> {kicker}
-      </div>
-      <h2 className="mt-5 text-4xl font-semibold md:text-6xl">
-        <span className="text-gradient">{title}</span>
-      </h2>
-      {subtitle && <p className="mx-auto mt-4 max-w-2xl text-balance text-muted-foreground">{subtitle}</p>}
-    </motion.div>
+    <div className="mb-10">
+      <div className="mono-label text-[var(--accent-blue)]">{kicker}</div>
+      <h2 className="mt-2 text-3xl font-bold md:text-4xl">{title}</h2>
+    </div>
   );
 }
 
 /* ---------------- Nav ---------------- */
-const NAV = [
-  { id: "about", label: "About" },
-  { id: "projects", label: "Projects" },
-  { id: "experience", label: "Experience" },
-  { id: "achievements", label: "Achievements" },
-  { id: "contact", label: "Contact" },
-];
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
+    const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   return (
-    <motion.header
-      initial={{ y: -40, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className={`fixed inset-x-0 top-4 z-50 mx-auto flex max-w-6xl items-center justify-between rounded-full px-5 py-3 transition-all ${
-        scrolled ? "glass-strong" : "glass"
+    <header
+      className={`sticky top-0 z-50 w-full border-b transition-colors ${
+        scrolled ? "border-border bg-background/85 backdrop-blur" : "border-transparent bg-background/0"
       }`}
-      style={{ width: "calc(100% - 2rem)" }}
     >
-      <a href="#top" className="flex items-center gap-2 font-display text-sm font-semibold">
-        <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-[oklch(0.7_0.2_265)] via-[oklch(0.7_0.22_310)] to-[oklch(0.85_0.16_210)] text-primary-foreground shadow-[0_0_20px_-2px_oklch(0.7_0.22_310/0.7)]">
-          CT
-        </span>
-        <span className="hidden sm:inline">Charan Tallolli</span>
-      </a>
-      <nav className="hidden items-center gap-1 md:flex">
-        {NAV.map((n) => (
-          <a key={n.id} href={`#${n.id}`} className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition hover:bg-white/5 hover:text-foreground">
-            {n.label}
-          </a>
-        ))}
-      </nav>
-    </motion.header>
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <a href="#top" className="flex items-center gap-2 font-display text-sm font-semibold">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent-green)] opacity-70" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent-green)]" />
+          </span>
+          <span>Charan Tallolli</span>
+        </a>
+        <nav className="hidden items-center gap-6 md:flex">
+          {NAV.map((n) => (
+            <a
+              key={n.id}
+              href={`#${n.id}`}
+              className="text-sm text-muted-foreground transition hover:text-foreground"
+            >
+              {n.label}
+            </a>
+          ))}
+        </nav>
+        <a
+          href={resumeAsset.url}
+          download="Charan_Tallolli_Resume.docx"
+          target="_blank"
+          rel="noopener"
+          className="inline-flex items-center gap-2 rounded-md border border-border bg-[var(--ink)] px-3 py-1.5 font-mono text-xs text-primary-foreground transition hover:opacity-90"
+        >
+          <Download className="h-3.5 w-3.5" /> Resume.docx
+        </a>
+      </div>
+    </header>
   );
 }
 
 /* ---------------- Hero ---------------- */
-const ROLES = ["AI Developer", "Automation Test Engineer", "Full-Stack Developer"];
 
 function Hero() {
-  const [i, setI] = useState(0);
-  const mounted = useMounted();
-  useEffect(() => {
-    const t = setInterval(() => setI((p) => (p + 1) % ROLES.length), 2400);
-    return () => clearInterval(t);
-  }, []);
   return (
-    <section id="top" className="relative flex min-h-screen items-center overflow-hidden pt-28">
-      <div className="absolute inset-0 grid-bg opacity-40" />
-      <div className="absolute inset-0" style={{ background: "var(--gradient-glow)" }} />
-      <div className="container relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-6 lg:grid-cols-2">
-        <div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-            </span>
-            <span className="text-muted-foreground">Available for SDET & AI roles · 2026 Grad</span>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="mt-6 text-5xl font-semibold leading-[1.05] md:text-7xl"
-          >
-            <span className="block">Charan</span>
-            <span className="block text-gradient">Tallolli</span>
-          </motion.h1>
-
-          <div className="mt-6 flex h-10 items-center gap-3 text-lg md:text-xl">
-            <span className="font-mono text-[oklch(0.85_0.16_210)]">{">"}</span>
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={ROLES[i]}
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -14 }}
-                transition={{ duration: 0.4 }}
-                className="font-display font-medium"
-              >
-                {ROLES[i]}
-              </motion.span>
-            </AnimatePresence>
-            <span className="ml-1 inline-block h-5 w-0.5 animate-pulse bg-foreground" />
+    <section id="profile" className="relative pt-10 pb-20">
+      <div className="absolute inset-0 -z-10 grid-bg" />
+      <div className="mx-auto max-w-6xl px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="relative overflow-hidden card-surface shadow-[0_30px_80px_-40px_rgba(15,23,42,0.25)]"
+        >
+          {/* top accent bar */}
+          <div className="relative h-[3px] w-full overflow-hidden bg-gradient-to-r from-[var(--accent-blue)] via-[var(--accent-blue)] to-[var(--accent-green)]">
+            <span className="absolute inset-y-0 left-0 w-1/3 bg-white/40 animate-scan" />
           </div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="mt-6 max-w-xl text-muted-foreground"
-          >
-            Computer Science Engineering student (B.E, 82%) building intelligent systems —
-            from CNN-powered crop disease detection to Selenium automation frameworks that
-            cut regression time by ~60%.
-          </motion.p>
+          <div className="p-6 md:p-10">
+            <MetaStrip />
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55, duration: 0.6 }}
-            className="mt-8 flex flex-wrap gap-3"
-          >
-            <a href={resumeAsset.url} download="Charan_Tallolli_Resume.docx" target="_blank" rel="noopener" className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[oklch(0.7_0.2_265)] via-[oklch(0.7_0.22_310)] to-[oklch(0.85_0.16_210)] px-5 py-3 text-sm font-medium text-primary-foreground shadow-[0_10px_40px_-10px_oklch(0.7_0.22_310/0.8)] transition hover:scale-[1.03]">
-              <Download className="h-4 w-4" /> Download Resume
-            </a>
-            <a href="#projects" className="group inline-flex items-center gap-2 rounded-full glass px-5 py-3 text-sm font-medium transition hover:bg-white/10">
-              View Projects <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-            </a>
-            <a href="#contact" className="inline-flex items-center gap-2 rounded-full border border-white/10 px-5 py-3 text-sm font-medium text-muted-foreground transition hover:text-foreground">
-              Contact Me
-            </a>
-          </motion.div>
-
-          <div className="mt-10 flex items-center gap-6 text-xs text-muted-foreground">
-            <div className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" /> Bangalore, India</div>
-            <div className="flex items-center gap-2"><Mail className="h-3.5 w-3.5" /> charantallolli@gmail.com</div>
-          </div>
-        </div>
-
-        <HeroVisual />
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- About ---------------- */
-const TIMELINE = [
-  { y: "2020", t: "10th Grade", d: "Prerana English Medium High School — 75%" },
-  { y: "2022", t: "Pre-University", d: "Elite Pre-University College — 70%" },
-  { y: "2026", t: "SDET Trainee", d: "QSpiders, Rajajinagar — Selenium, TestNG, POM" },
-  { y: "2026", t: "B.E Computer Science", d: "R.L. Jalappa Institute of Technology (VTU) — 82%" },
-];
-
-function About() {
-  return (
-    <section id="about" className="relative py-28">
-      <div className="container mx-auto max-w-6xl px-6">
-        <SectionTitle kicker="About" title="The engineer behind the code" subtitle="A detail-oriented builder bridging AI experimentation and rigorous software testing." />
-        <div className="grid gap-6 lg:grid-cols-5">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="glass rounded-3xl p-8 lg:col-span-2"
-          >
-            <GraduationCap className="h-8 w-8 text-[oklch(0.85_0.16_210)]" />
-            <h3 className="mt-4 text-2xl font-semibold">Career Objective</h3>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Detail-oriented CSE student with hands-on SDET training in Manual & Automation Testing
-              (Selenium WebDriver + Core Java), SQL-based data validation, and structured defect management
-              via JIRA. Experienced across the full STLC — from test plan design through Smoke, Regression,
-              SIT, and UAT execution — and in building Page Object Model frameworks with TestNG.
-            </p>
-            <div className="mt-6 grid grid-cols-3 gap-3 text-center">
-              {[{ k: "82%", v: "B.E Score" }, { k: "2026", v: "Graduating" }, { k: "50+", v: "Test Cases" }].map((s) => (
-                <div key={s.v} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-                  <div className="text-xl font-semibold text-gradient">{s.k}</div>
-                  <div className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">{s.v}</div>
+            <div className="mt-8 grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+              {/* Left: headline */}
+              <div>
+                <div className="mono-label text-[var(--accent-blue)]">
+                  AI DEVELOPER &amp; SDET ENGINEER
                 </div>
-              ))}
-            </div>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="glass rounded-3xl p-8 lg:col-span-3"
-          >
-            <h3 className="text-2xl font-semibold">Learning journey</h3>
-            <div className="mt-6 space-y-5">
-              {TIMELINE.map((item, idx) => (
-                <motion.div
-                  key={item.y}
-                  initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                  transition={{ delay: idx * 0.08 }}
-                  className="relative flex gap-4 pl-6"
-                >
-                  <span className="absolute left-0 top-2 h-3 w-3 rounded-full bg-gradient-to-br from-[oklch(0.7_0.2_265)] to-[oklch(0.7_0.22_310)] shadow-[0_0_12px_oklch(0.7_0.22_310/0.8)]" />
-                  {idx < TIMELINE.length - 1 && <span className="absolute left-[5px] top-5 h-full w-px bg-gradient-to-b from-white/20 to-transparent" />}
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                      <span className="font-mono text-xs text-[oklch(0.85_0.16_210)] shrink-0">{item.y}</span>
-                      <h4 className="font-medium">{item.t}</h4>
-                    </div>
-                    <p className="mt-1 text-sm text-muted-foreground">{item.d}</p>
-                  </div>
-                </motion.div>
-              ))}
+                <h1 className="mt-4 text-4xl font-bold leading-[1.05] md:text-6xl">
+                  Hi, I&apos;m Charan. I build intelligent systems and test them rigorously.
+                </h1>
+
+                <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
+                  I design CNN-powered vision pipelines, ship Flask APIs, and harden them
+                  with Selenium + TestNG automation, SQL data validation, and a disciplined
+                  Software Test Life Cycle. I take features from training notebook to a
+                  defect-free v1.0 release — and I keep the receipts.
+                </p>
+
+                <blockquote className="mt-6 border-l-2 border-[var(--accent-blue)] pl-4 text-sm italic text-foreground/80">
+                  &ldquo;Give me an ambiguous AI problem and a strict release deadline, and
+                  I will design the system — and the tests that prove it.&rdquo;
+                </blockquote>
+
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <a
+                    href="#projects"
+                    className="inline-flex items-center gap-2 rounded-md bg-[var(--ink)] px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+                  >
+                    Inspect Projects
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center gap-2 rounded-md border border-border bg-white px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
+                  >
+                    Get In Touch
+                  </a>
+                </div>
+
+                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> Bangalore, India</span>
+                  <span className="flex items-center gap-1.5"><Mail className="h-3.5 w-3.5" /> charantallolli@gmail.com</span>
+                </div>
+              </div>
+
+              {/* Right: metrics */}
+              <div className="space-y-4">
+                {METRICS.map((m) => (
+                  <MetricCard key={m.label} {...m} />
+                ))}
+              </div>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
+/* ---------------- Philosophy ---------------- */
+
+function Philosophy() {
+  return (
+    <section id="philosophy" className="relative py-20">
+      <div className="mx-auto max-w-6xl px-6">
+        <SectionKicker kicker="PRINCIPLES" title="My Engineering Philosophy" />
+        <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
+          {PRINCIPLES.map((p, i) => (
+            <motion.div
+              key={p.n}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.5, delay: (i % 3) * 0.06 }}
+              className="bg-background p-6 transition-colors hover:bg-muted/50"
+            >
+              <div className="mono-label">
+                {p.n} / <span className="text-[var(--accent-blue)]">{p.kicker}</span>
+              </div>
+              <h3 className="mt-3 text-xl font-bold">{p.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 /* ---------------- Projects ---------------- */
-const PROJECTS = [
-  {
-    title: "AgriSense — AI Crop Disease Detection",
-    tag: "AI · Computer Vision · Flask",
-    accent: "from-emerald-400 to-cyan-400",
-    desc: "CNN-powered multi-crop disease prediction with OpenCV preprocessing, deployed via a Flask REST API. 94% model accuracy across 5 crop types with zero false-negative critical alerts.",
-    bullets: ["TensorFlow / Keras CNN", "OpenCV image processing", "Flask REST API", "30+ UAT cases passing"],
-  },
-  {
-    title: "Real-Time Sign Language Interpreter",
-    tag: "AI · MediaPipe · Speech",
-    accent: "from-violet-400 to-fuchsia-500",
-    desc: "Real-time hand-tracking and gesture classifier translating 26 sign classes into text and speech. 96% reliability across a 200-sample sanity suite.",
-    bullets: ["MediaPipe hand tracking", "CNN gesture classifier", "Text + speech output", "Live webcam pipeline"],
-  },
-  {
-    title: "Safe Commute Planner",
-    tag: "Full-Stack · React · Python",
-    accent: "from-sky-400 to-indigo-500",
-    desc: "Cross-browser web app for safer route planning. Delivered defect-free v1.0 across 4 browsers with zero P1 defects at launch via Selenium-driven regression and SIT cycles.",
-    bullets: ["React + Python backend", "Selenium cross-browser", "SQL data validation", "SIT & regression cycles"],
-  },
-];
 
 function Projects() {
   return (
-    <section id="projects" className="relative py-28">
-      <div className="container mx-auto max-w-6xl px-6">
-        <SectionTitle kicker="Work" title="Featured projects" subtitle="Shipped, tested, and measured — each built with both a developer's and a QA's eye." />
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <section id="projects" className="relative py-20">
+      <div className="mx-auto max-w-6xl px-6">
+        <SectionKicker kicker="SELECTED PROJECTS" title="Core Systems Portfolio" />
+
+        <div className="space-y-6">
           {PROJECTS.map((p, i) => (
             <motion.article
               key={p.title}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
-              whileHover={{ y: -8 }}
-              className="group relative overflow-hidden rounded-3xl glass p-6"
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.5, delay: i * 0.05 }}
+              className="card-surface p-6 md:p-8"
             >
-              <div className={`absolute -top-20 -right-20 h-48 w-48 rounded-full bg-gradient-to-br ${p.accent} opacity-20 blur-3xl transition group-hover:opacity-40`} />
-              <div className="flex items-start justify-between">
-                <span className={`inline-block rounded-full bg-gradient-to-r ${p.accent} bg-clip-text text-xs font-mono text-transparent`}>
-                  {p.tag}
-                </span>
-                <span className="font-mono text-xs text-muted-foreground">0{i + 1}</span>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-md border border-border bg-muted text-2xl">
+                    {p.icon}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold md:text-2xl">{p.title}</h3>
+                    <div className="mono-label mt-1">{p.status}</div>
+                  </div>
+                </div>
+                <a
+                  href="https://github.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-xs text-foreground transition hover:bg-muted"
+                >
+                  View Source <ExternalLink className="h-3.5 w-3.5" />
+                </a>
               </div>
-              <h3 className="mt-4 text-xl font-semibold leading-tight">{p.title}</h3>
-              <p className="mt-3 text-sm text-muted-foreground">{p.desc}</p>
-              <ul className="mt-4 space-y-1.5">
-                {p.bullets.map((b) => (
-                  <li key={b} className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <ChevronRight className="h-3 w-3 text-[oklch(0.85_0.16_210)]" /> {b}
+
+              <p className="mt-5 max-w-3xl text-sm leading-relaxed text-muted-foreground">{p.blurb}</p>
+
+              <ul className="mt-5 space-y-3 text-sm">
+                {p.bullets.map(([head, rest]) => (
+                  <li key={head} className="leading-relaxed">
+                    <span className="font-semibold text-foreground">{head}</span>{" "}
+                    <span className="text-muted-foreground">{rest}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-6 flex gap-2">
-                <a href="https://github.com/" target="_blank" rel="noreferrer" className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full glass px-3 py-2 text-xs font-medium transition hover:bg-white/10">
-                  <Github className="h-3.5 w-3.5" /> Code
-                </a>
-                <a href="#" className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-[oklch(0.7_0.2_265)] to-[oklch(0.7_0.22_310)] px-3 py-2 text-xs font-medium text-primary-foreground transition hover:opacity-90">
-                  <ExternalLink className="h-3.5 w-3.5" /> Demo
-                </a>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                {p.stack.map((t) => (
+                  <span
+                    key={t}
+                    className="rounded-md border border-border bg-muted px-2.5 py-1 font-mono text-[11px] text-foreground"
+                  >
+                    {t}
+                  </span>
+                ))}
               </div>
             </motion.article>
           ))}
@@ -471,123 +487,35 @@ function Projects() {
 }
 
 /* ---------------- Experience ---------------- */
-const STATS = [
-  { v: "50+", l: "Test cases authored", icon: TestTube2 },
-  { v: "60%", l: "Regression time saved", icon: Sparkles },
-  { v: "94%", l: "Model accuracy", icon: Brain },
-  { v: "100%", l: "Data validation pass", icon: Code2 },
-];
-
-function Counter({ value }: { value: string }) {
-  const [n, setN] = useState(0);
-  const num = parseInt(value);
-  const ref = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    if (isNaN(num)) return;
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        let s = 0;
-        const inc = num / 40;
-        const t = setInterval(() => {
-          s += inc;
-          if (s >= num) { setN(num); clearInterval(t); } else setN(Math.floor(s));
-        }, 30);
-      }
-    }, { threshold: 0.5 });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [num]);
-  return <span ref={ref}>{isNaN(num) ? value : n + value.replace(/\d+/, "")}</span>;
-}
 
 function Experience() {
   return (
-    <section id="experience" className="relative py-28">
-      <div className="container mx-auto max-w-6xl px-6">
-        <SectionTitle kicker="Experience" title="Where I've shipped quality" />
-        <div className="grid gap-6 lg:grid-cols-5">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="glass rounded-3xl p-8 lg:col-span-3"
-          >
-            <div className="flex items-start gap-4">
-              <div className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-[oklch(0.7_0.2_265)] to-[oklch(0.7_0.22_310)] shadow-[0_0_24px_-4px_oklch(0.7_0.22_310/0.8)]">
-                <Briefcase className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <div className="flex-1">
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <h3 className="text-xl font-semibold">SDET Trainee · QSpiders</h3>
-                  <span className="font-mono text-xs text-muted-foreground">2024 — 2025</span>
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">Rajajinagar, Bangalore · Software Testing Automation with AI</p>
-              </div>
-            </div>
-            <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-              {[
-                "Designed and executed 50+ manual test cases across Smoke, Sanity, Regression, SIT & UAT — full requirements traceability via structured STLC.",
-                "Built an end-to-end Selenium + TestNG + POM automation suite, cutting regression execution time by ~60%.",
-                "Maintained a structured Defect Life Cycle with zero missed closures via JIRA-style workflows and Excel trackers.",
-                "Validated backend data integrity across 3 modules with 100% accuracy using SQL joins and CRUD validation.",
-              ].map((t) => (
-                <li key={t} className="flex gap-3"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[oklch(0.85_0.16_210)]" />{t}</li>
-              ))}
-            </ul>
-          </motion.div>
-
-          <div className="grid grid-cols-2 gap-4 lg:col-span-2">
-            {STATS.map((s, i) => (
-              <motion.div
-                key={s.l}
-                initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="glass rounded-2xl p-5"
-              >
-                <s.icon className="h-5 w-5 text-[oklch(0.85_0.16_210)]" />
-                <div className="mt-3 text-3xl font-semibold text-gradient"><Counter value={s.v} /></div>
-                <div className="mt-1 text-xs text-muted-foreground">{s.l}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- Achievements / Certs ---------------- */
-const ACHIEVEMENTS = [
-  { icon: Trophy, t: "SDET Certification", d: "QSpiders — Selenium + Core Java", c: "from-amber-400 to-orange-500" },
-  { icon: Award, t: "AgriSense v1.0", d: "Defect-free release, 30+ UAT criteria passed", c: "from-emerald-400 to-teal-500" },
-  { icon: Brain, t: "AI Project Excellence", d: "94% CNN accuracy across 5 crops", c: "from-violet-400 to-fuchsia-500" },
-  { icon: Code2, t: "LeetCode & HackerRank", d: "Active problem solver — DSA & SQL", c: "from-sky-400 to-indigo-500" },
-  { icon: Layers, t: "Cross-browser QA", d: "Zero P1 defects at Safe Commute launch", c: "from-rose-400 to-pink-500" },
-  { icon: Sparkles, t: "Prompt Engineering", d: "AI-assisted test generation workflows", c: "from-cyan-400 to-blue-500" },
-];
-
-function Achievements() {
-  return (
-    <section id="achievements" className="relative py-28">
-      <div className="container mx-auto max-w-6xl px-6">
-        <SectionTitle kicker="Recognition" title="Achievements & certifications" subtitle="Milestones across testing, AI engineering, and competitive coding." />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {ACHIEVEMENTS.map((a, i) => (
+    <section id="experience" className="relative py-20">
+      <div className="mx-auto max-w-6xl px-6">
+        <SectionKicker kicker="WORK & EDUCATION" title="Production Experience" />
+        <div className="space-y-6">
+          {EXPERIENCE.map((e, i) => (
             <motion.div
-              key={a.t}
-              initial={{ opacity: 0, y: 24 }}
+              key={e.role}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
-              transition={{ delay: i * 0.06 }}
-              whileHover={{ rotateY: 6, rotateX: -3, y: -4 }}
-              style={{ transformStyle: "preserve-3d", perspective: 1000 }}
-              className="group relative overflow-hidden rounded-2xl glass p-6"
+              transition={{ duration: 0.5, delay: i * 0.05 }}
+              className="card-surface p-6 md:p-8"
             >
-              <div className={`absolute -top-10 -right-10 h-32 w-32 rounded-full bg-gradient-to-br ${a.c} opacity-20 blur-2xl transition group-hover:opacity-50`} />
-              <div className={`mb-4 inline-grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br ${a.c} shadow-lg`}>
-                <a.icon className="h-5 w-5 text-white" />
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <h3 className="text-lg font-bold md:text-xl">{e.role}</h3>
+                <span className="mono-label">{e.period}</span>
               </div>
-              <h4 className="font-semibold">{a.t}</h4>
-              <p className="mt-1 text-sm text-muted-foreground">{a.d}</p>
+              <div className="mono-label mt-1 text-[var(--accent-blue)]">{e.org}</div>
+              <ul className="mt-5 space-y-2.5 text-sm">
+                {e.points.map(([head, rest]) => (
+                  <li key={head} className="leading-relaxed">
+                    <span className="font-semibold text-foreground">{head}</span>{" "}
+                    <span className="text-muted-foreground">{rest}</span>
+                  </li>
+                ))}
+              </ul>
             </motion.div>
           ))}
         </div>
@@ -596,63 +524,83 @@ function Achievements() {
   );
 }
 
+/* ---------------- Stack ---------------- */
+
+function Stack() {
+  return (
+    <section id="stack" className="relative py-20">
+      <div className="mx-auto max-w-6xl px-6">
+        <SectionKicker kicker="EXPERTISE" title="Technical Skills & Tools" />
+        <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-2">
+          {STACK.map((group) => (
+            <div key={group.group} className="bg-background p-6">
+              <div className="mono-label text-[var(--accent-blue)]">{group.group}</div>
+              <ul className="mt-4 space-y-2">
+                {group.items.map(([name, desc]) => (
+                  <li
+                    key={name}
+                    className="flex items-baseline justify-between gap-4 border-b border-dashed border-border py-2 last:border-b-0"
+                  >
+                    <span className="text-sm font-medium text-foreground">{name}</span>
+                    <span className="mono-label">{desc}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ---------------- Contact ---------------- */
+
 function Contact() {
   return (
-    <section id="contact" className="relative py-28">
-      <div className="container mx-auto max-w-5xl px-6">
-        <SectionTitle kicker="Get in touch" title="Let's build something" subtitle="Open to SDET, AI/ML engineering, and full-stack opportunities." />
-        <div className="grid gap-6 lg:grid-cols-5">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-            className="glass rounded-3xl p-8 lg:col-span-2"
-          >
-            <h3 className="text-xl font-semibold">Contact info</h3>
-            <div className="mt-6 space-y-4 text-sm">
-              {[
-                { Icon: Mail, l: "charantallolli@gmail.com", h: "mailto:charantallolli@gmail.com" },
-                { Icon: Phone, l: "+91 7899654936", h: "tel:+917899654936" },
-                { Icon: MapPin, l: "Bangalore, India", h: "#" },
-                { Icon: Github, l: "github.com/charantallolli", h: "https://github.com/" },
-                { Icon: Linkedin, l: "linkedin.com/in/charantallolli", h: "https://linkedin.com/" },
-              ].map(({ Icon, l, h }) => (
-                <a key={l} href={h} target="_blank" rel="noreferrer" className="group flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-3 transition hover:border-white/15 hover:bg-white/[0.05]">
-                  <div className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-[oklch(0.7_0.2_265)] to-[oklch(0.7_0.22_310)] text-primary-foreground transition group-hover:scale-110">
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <span className="truncate">{l}</span>
-                </a>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.form
-            initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-            onSubmit={(e) => { e.preventDefault(); window.location.href = "mailto:charantallolli@gmail.com"; }}
-            className="glass-strong rounded-3xl p-8 lg:col-span-3"
-          >
-            <div className="grid gap-4 sm:grid-cols-2">
-              <label className="block">
-                <span className="mb-1.5 block text-xs uppercase tracking-wider text-muted-foreground">Name</span>
-                <input required className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm outline-none transition focus:border-[oklch(0.7_0.22_310)] focus:bg-white/[0.06]" placeholder="Your name" />
-              </label>
-              <label className="block">
-                <span className="mb-1.5 block text-xs uppercase tracking-wider text-muted-foreground">Email</span>
-                <input required type="email" className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm outline-none transition focus:border-[oklch(0.7_0.22_310)] focus:bg-white/[0.06]" placeholder="you@company.com" />
-              </label>
-            </div>
-            <label className="mt-4 block">
-              <span className="mb-1.5 block text-xs uppercase tracking-wider text-muted-foreground">Message</span>
-              <textarea required rows={5} className="w-full resize-none rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm outline-none transition focus:border-[oklch(0.7_0.22_310)] focus:bg-white/[0.06]" placeholder="Tell me about the role or project…" />
-            </label>
-            <button className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[oklch(0.7_0.2_265)] via-[oklch(0.7_0.22_310)] to-[oklch(0.85_0.16_210)] py-3 text-sm font-medium text-primary-foreground shadow-[0_10px_40px_-10px_oklch(0.7_0.22_310/0.8)] transition hover:scale-[1.01]">
-              Send message <ArrowRight className="h-4 w-4" />
-            </button>
-          </motion.form>
+    <section id="contact" className="relative py-20">
+      <div className="mx-auto max-w-6xl px-6">
+        <SectionKicker kicker="CONNECT" title="Initialize Technical Connection" />
+        <div className="card-surface p-6 md:p-10">
+          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            If you&apos;re hiring an SDET who can also ship AI features, or an AI engineer who
+            takes test discipline seriously, let&apos;s talk. I&apos;m open to graduate roles
+            in QA automation, ML engineering, and full-stack delivery starting 2026.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a
+              href="mailto:charantallolli@gmail.com"
+              className="inline-flex items-center gap-2 rounded-md bg-[var(--ink)] px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+            >
+              <Mail className="h-4 w-4" /> charantallolli@gmail.com
+            </a>
+            <a
+              href="https://github.com/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-white px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
+            >
+              <Github className="h-4 w-4" /> GitHub
+            </a>
+            <a
+              href="https://linkedin.com/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-white px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
+            >
+              <Linkedin className="h-4 w-4" /> LinkedIn
+            </a>
+            <a
+              href="tel:+917899654936"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-white px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
+            >
+              +91 78996 54936
+            </a>
+          </div>
         </div>
 
-        <p className="mt-12 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Charan Tallolli · Built with React, Three.js & Framer Motion
+        <p className="mt-10 text-center text-xs text-muted-foreground">
+          © {new Date().getFullYear()} Charan Tallolli · Built with React &amp; TanStack Start
         </p>
       </div>
     </section>
@@ -660,19 +608,17 @@ function Contact() {
 }
 
 /* ---------------- Page ---------------- */
+
 function Portfolio() {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
   return (
-    <div className="relative min-h-screen text-foreground">
-      <motion.div style={{ scaleX }} className="fixed inset-x-0 top-0 z-[60] h-0.5 origin-left bg-gradient-to-r from-[oklch(0.7_0.2_265)] via-[oklch(0.7_0.22_310)] to-[oklch(0.85_0.16_210)]" />
+    <div id="top" className="relative min-h-screen text-foreground">
       <Nav />
       <main>
         <Hero />
-        <About />
+        <Philosophy />
         <Projects />
         <Experience />
-        <Achievements />
+        <Stack />
         <Contact />
       </main>
     </div>
