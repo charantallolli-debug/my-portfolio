@@ -230,18 +230,7 @@ function Hero() {
           </div>
         </div>
 
-        <div className="relative h-[420px] md:h-[560px]">
-          <div className="absolute inset-0 rounded-3xl glass-strong overflow-hidden animate-pulse-glow">
-            {mounted && <HeroScene />}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
-            <div className="pointer-events-none absolute left-4 top-4 rounded-full glass px-3 py-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-              ai.core // online
-            </div>
-            <div className="pointer-events-none absolute right-4 bottom-4 rounded-full glass px-3 py-1 text-[10px] font-mono text-muted-foreground">
-              v2026.0
-            </div>
-          </div>
-        </div>
+        <HeroVisual />
       </div>
     </section>
   );
